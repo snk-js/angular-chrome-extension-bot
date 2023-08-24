@@ -11,9 +11,7 @@ import { TAB_ID } from "../../../../providers/tab-id.provider";
 export class PopupComponent {
   message: string;
 
-  constructor(@Inject(TAB_ID) readonly tabId: number) {
-    console.log("ssssssssssssssssssssssssssssssssss");
-  }
+  constructor(@Inject(TAB_ID) readonly tabId: number) {}
 
   async onClick(): Promise<void> {
     this.message = await bindCallback<any, any>(
