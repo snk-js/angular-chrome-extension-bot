@@ -1,25 +1,29 @@
-import { Component, Inject } from '@angular/core';
-import { bindCallback } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { TAB_ID } from '../../../../providers/tab-id.provider';
+import { Component, Inject } from "@angular/core";
+import { bindCallback } from "rxjs";
+import { map } from "rxjs/operators";
+import { TAB_ID } from "../../../../providers/tab-id.provider";
 
 @Component({
-  selector: 'app-popup',
-  templateUrl: 'popup.component.html',
-  styleUrls: ['popup.component.scss']
+  selector: "app-popup",
+  templateUrl: "popup.component.html",
+  styleUrls: ["popup.component.scss"],
 })
 export class PopupComponent {
   message: string;
 
-  constructor(@Inject(TAB_ID) readonly tabId: number) {}
+  constructor(@Inject(TAB_ID) readonly tabId: number) {
+    console.log("ssssssssssssssssssssssssssssssssss");
+  }
 
   async onClick(): Promise<void> {
-    this.message = await bindCallback<any, any>(chrome.tabs.sendMessage.bind(this, this.tabId, 'request'))()
+    this.message = await bindCallback<any, any>(
+      chrome.tabs.sendMessage.bind(this, this.tabId, "request")
+    )()
       .pipe(
-        map(msg =>
+        map((msg) =>
           chrome.runtime.lastError
-            ? 'The current page is protected by the browser, goto: https://www.google.nl and try again.'
-            : msg
+            ? "The current page is protected by the browser, goto: https://www.google.nl and try again."
+            : JSON.stringify(msg)
         )
       )
       .toPromise();
