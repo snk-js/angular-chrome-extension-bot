@@ -1,25 +1,46 @@
 chrome.runtime.onMessage.addListener((request, sender, respond) => {
     const handler = new Promise((resolve, reject) => {
         if (request) {
-            const contentElement = document.querySelector(".automation-content");
-            if (contentElement) {
-                // Get the URL of your Angular app's index.html from your extension's files
-                const iframeSrc = chrome.runtime.getURL("index.html");
+            window.addEventListener("message", function (event) {
+                if (event.origin !== `chrome-extension://${chrome.runtime.id}`) return;
+                if (event.data.type === "attachEventListener") {
+                    document.body.addEventListener("mouseover", function (e) {
+                        console.log(e.target);
+                    });
+                }
+            });
+            // Remove the iframe if it already exists
+            const currentFrame = document.querySelector("automation-iframe");
+            currentFrame && currentFrame.remove();
 
-                // Create an iframe element
-                const iframe = document.createElement("iframe");
-                iframe.src = iframeSrc;
-                iframe.width = "100%"; // or your desired width
-                iframe.height = "100%"; // or your desired height
+            const panel = document.querySelector(".automation-panel");
+            panel && (panel.innerHTML = "");
 
-                // Append the iframe to the contentElement
-                contentElement.innerHTML = "";
-                contentElement.appendChild(iframe);
+            // Create a new container for the iframe
+            const containerDiv = document.createElement("div");
+            containerDiv.style.width = "-webkit-fill-available";
+            containerDiv.style.position = "fixed";
+            containerDiv.style.bottom = "-50px";
+            containerDiv.style.left = "50%";
+            containerDiv.style.transform = "translateX(-50%)";
+            containerDiv.style.borderTopLeftRadius = "10px";
+            containerDiv.style.borderTopRightRadius = "10px";
+            containerDiv.style.zIndex = "9999";
 
-                resolve("Iframe added to the page.");
-            } else {
-                reject("Content element not found.");
-            }
+            const iframeSrc = chrome.runtime.getURL("index.html");
+
+            const iframe = document.createElement("iframe");
+            iframe.id = "automation-iframe";
+            iframe.src = iframeSrc;
+            iframe.width = "100%";
+            iframe.height = "100%";
+            iframe.height = "300px";
+
+            containerDiv.appendChild(iframe);
+
+            document.body.appendChild(containerDiv);
+
+            resolve("Iframe added to the page.");
         } else {
             reject("request is empty.");
         }
