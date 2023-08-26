@@ -1,3 +1,5 @@
+let lastModifiedElement = null;
+
 chrome.runtime.onMessage.addListener((request, sender, respond) => {
     const handler = new Promise((resolve, reject) => {
         if (request) {
@@ -5,7 +7,18 @@ chrome.runtime.onMessage.addListener((request, sender, respond) => {
                 if (event.origin !== `chrome-extension://${chrome.runtime.id}`) return;
                 if (event.data.type === "attachEventListener") {
                     document.body.addEventListener("mouseover", function (e) {
-                        console.log(e.target);
+                        // Remove style from the last modified element, if any
+                        if (lastModifiedElement) {
+                            lastModifiedElement.style.outline = "";
+                        }
+
+                        const element = e.target;
+
+                        e.stopPropagation();
+                        e.preventDefault();
+
+                        element && (element.style.outline = "2px solid pink");
+                        lastModifiedElement = element;
                     });
                 }
             });
