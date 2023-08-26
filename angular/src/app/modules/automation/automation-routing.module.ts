@@ -1,6 +1,6 @@
 import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
-import { AutomationComponent } from "./pages/popup/automation.component";
+import { AutomationComponent } from "./pages/actions/automation.component";
 
 const routes: Routes = [
   {

@@ -1,0 +1,71 @@
+<div
+  class="rounded-tl-md rounded-tr-md border overflow-hidden bg-gray-800 bg-opacity-60 backdrop-blur-sm shadow-lg z-50"
+>
+  <div class="flex justify-between p-3 tracking-wider">
+    <div class="flex items-center">
+      <div class="px-2 text-sm font-black rounded-sm bg-gray-400">clickbot</div>
+      <div class="font-medium text-black rounded-sm bg-gray-400">/ Actions</div>
+    </div>
+    <button
+      class="w-8 h-8 rounded-md bg-gray-300 text-gray-600 hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+    >
+      x
+    </button>
+  </div>
+
+  <hr class="m-2" />
+
+  <div *ngIf="selectedActionId > 0; else actionsDisplay">
+    <app-child-actions
+      [selectedActionId]="selectedActionId"
+      [actions]="actions"
+    >
+    </app-child-actions>
+  </div>
+
+  <ng-template #actionsDisplay>
+    <span class="text-gray-300 text-sm font-bold m-4">choose one...</span>
+    <div class="flex">
+      <div
+        *ngFor="let action of actions"
+        [ngClass]="{
+          'relative min-w-32 m-4 mb-5 h-36 w-36 cursor-pointer transition duration-300': true,
+          'hover:rotate-45': action.available,
+          unavailable: !action.available,
+          selected: selectedActionId === action.id
+        }"
+        (click)="selectAction(action)"
+        [class.unavailable]="!action.available"
+        [class.selected]="selectedActionId === action.id"
+      >
+        <div
+          *ngIf="!action.available"
+          class="unavailable-overlay backdrop-blur-xl bg-opacity-60 font-black text-gray-700"
+        >
+          <!-- Blurred background -->
+          <div class="blur-background"></div>
+          <!-- Unblurred text -->
+          <div class="unblur-text">Unavailable</div>
+        </div>
+
+        <div
+          class="absolute inset-0 transform rounded-lg shadow-2xl z-10 bg-gray-800 bg-opacity-70"
+        ></div>
+
+        <div
+          class="relative h-full w-full rounded-lg min-w-[100px] bg-transparent z-20 transition-transform duration-300 hover:scale-125 hover:-rotate-45"
+        >
+          <div class="flex flex-col items-center gap-2 justify-center h-full">
+            <div class="h-1/4 flex items-center text-2xl">
+              {{ action.icon }}
+            </div>
+            <div class="text-orange-300 text-lg">{{ action.title }}</div>
+            <div class="text-center text-xs font text-gray-400">
+              {{ action.description }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+</div>
