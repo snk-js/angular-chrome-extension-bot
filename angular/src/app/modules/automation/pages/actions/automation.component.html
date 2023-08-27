@@ -7,6 +7,12 @@
         clickbot
       </div>
       <div class="font-medium text-green-200 rounded-sm">/ Actions</div>
+      <div
+        *ngIf="selectedActionId > 0"
+        class="font-medium text-green-200 rounded-sm"
+      >
+        / {{ selectedActionTitle }}
+      </div>
     </div>
     <button
       class="w-8 h-8 rounded-md bg-gray-300 text-gray-600 hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"

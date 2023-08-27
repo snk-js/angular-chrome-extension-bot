@@ -1,6 +1,7 @@
 type Criteria = {
     tagName?: string;
     className?: string;
+    parentClassName?: string;
 };
 
 let selectedElements: HTMLElement[] = [];
@@ -52,16 +53,6 @@ export function predictElements([firstElement, secondElement]: HTMLElement[]) {
     predictedElements.forEach((el) => el.classList.remove("predicted-element"));
     predictedElements = [];
 
-    if (
-        !firstElement.parentElement ||
-        !secondElement.parentElement ||
-        firstElement.parentElement !== secondElement.parentElement
-    ) {
-        console.log("Elements are not siblings. Cancelling prediction.");
-        removeElements();
-        return;
-    }
-
     if (firstElement.tagName === secondElement.tagName) {
         commonCriteria.tagName = firstElement.tagName;
     } else {
@@ -74,9 +65,45 @@ export function predictElements([firstElement, secondElement]: HTMLElement[]) {
         commonCriteria.className = firstElement.className;
     }
 
-    const siblingElements = Array.from(firstElement.parentElement.children) as HTMLElement[];
+    if (
+        firstElement.parentElement &&
+        secondElement.parentElement &&
+        firstElement.parentElement.className === secondElement.parentElement.className
+    ) {
+        commonCriteria.parentClassName = firstElement.parentElement.className;
+    }
 
-    const matchingElements = siblingElements.filter((element) => {
+    // Additional check for data attributes
+    const firstElementDataAttrs = Array.from(firstElement.attributes).filter((attr) =>
+        attr.name.startsWith("data-")
+    );
+    const secondElementDataAttrs = Array.from(secondElement.attributes).filter((attr) =>
+        attr.name.startsWith("data-")
+    );
+
+    const commonDataAttributes = firstElementDataAttrs.filter((attr) => {
+        return secondElementDataAttrs.some(
+            (secondAttr) => secondAttr.name === attr.name && secondAttr.value === attr.value
+        );
+    });
+
+    let elementsToSearch: HTMLElement[] = [];
+
+    if (
+        firstElement.parentElement &&
+        secondElement.parentElement &&
+        firstElement.parentElement === secondElement.parentElement
+    ) {
+        // If they share the same parent, start with siblings
+        elementsToSearch = Array.from(firstElement.parentElement.children) as HTMLElement[];
+    } else {
+        // Otherwise, search the entire document
+        elementsToSearch = Array.from(
+            document.querySelectorAll(commonCriteria.tagName)
+        ) as HTMLElement[];
+    }
+
+    const matchingElements = elementsToSearch.filter((element) => {
         if (selectedElements.includes(element)) {
             return false;
         }
@@ -87,6 +114,26 @@ export function predictElements([firstElement, secondElement]: HTMLElement[]) {
 
         if (commonCriteria.className && element.className !== commonCriteria.className) {
             return false;
+        }
+
+        // Check parent's class name
+        if (
+            commonCriteria.parentClassName &&
+            (!element.parentElement ||
+                element.parentElement.className !== commonCriteria.parentClassName)
+        ) {
+            return false;
+        }
+
+        // Check data attributes
+        if (commonDataAttributes.length > 0) {
+            if (
+                !commonDataAttributes.every(
+                    (attr) => element.getAttribute(attr.name) === attr.value
+                )
+            ) {
+                return false;
+            }
         }
 
         return true;

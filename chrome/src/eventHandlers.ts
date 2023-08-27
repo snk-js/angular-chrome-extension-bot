@@ -1,7 +1,7 @@
 import { mouseOverElement, mouseOutElement, addElement } from "./domManipulation";
 
 export function attachClickHandler() {
-    document.body.addEventListener("click", clickHandler);
+    document.body.addEventListener("click", clickHandler, true);
 }
 
 export function removeClickHandler() {
@@ -9,7 +9,11 @@ export function removeClickHandler() {
 }
 
 function clickHandler(e) {
+    e.preventDefault();
+    e.stopPropagation();
+
     const element = e.target;
+    console.log(element);
     if (element) {
         addElement(element);
     }

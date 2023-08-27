@@ -45,17 +45,18 @@ export class AutomationComponent {
   message: string;
   actions = buildActions();
   selectedActionId: number = 0;
+  selectedActionTitle: string = "";
 
   constructor(@Inject(TAB_ID) readonly tabId: number) {}
 
   ngOnInit() {
-    window.addEventListener("message", this.handleMessageFromParent.bind(this));
     this.sendMessageToContentScript({ type: "attachEventListener" });
   }
 
   selectAction(action: Action) {
     if (!action.available) return;
     this.selectedActionId = action.id;
+    this.selectedActionTitle = action.title;
     if (this.selectedActionId === 5) {
       this.sendMessageToContentScript({ type: "enableSelecting" });
     }
@@ -63,15 +64,11 @@ export class AutomationComponent {
 
   backToActions() {
     this.selectedActionId = 0;
+    this.selectedActionTitle = "";
     this.sendMessageToContentScript({ type: "disableSelecting" });
   }
 
   ngOnDestroy() {
-    // Cleanup
-    window.removeEventListener(
-      "message",
-      this.handleMessageFromParent.bind(this)
-    );
     this.sendMessageToContentScript({ type: "detachEventListener" });
   }
 
@@ -81,10 +78,6 @@ export class AutomationComponent {
       type: "hover",
       element: element.tagName,
     });
-  }
-
-  handleMessageFromParent(event: MessageEvent) {
-    if (event.origin !== window.location.origin) return;
   }
 
   private sendMessageToContentScript(message: any) {
