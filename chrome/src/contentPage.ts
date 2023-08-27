@@ -1,118 +1,67 @@
-let lastModifiedElement: HTMLElement | null = null;
+import {
+    attachClickHandler,
+    removeClickHandler,
+    attachMouseOverHandler,
+    removeMouseOverHandler,
+} from "./eventHandlers";
+import { injectIframe } from "./iframe";
+import { removeElements } from "./domManipulation";
 
-let selectedElements: HTMLElement[] = [];
+let i = 0;
 
-let originalStyles: { outline?: string }[] = [];
-
-const clickHandler = function (e: MouseEvent) {
-    const element = e.target as HTMLElement | null;
-    if (element) {
-        addElement(element);
-    }
-};
-
-const addElement = (element: HTMLElement) => {
-    // Store original state
-    const originalOutline = element.style.outline;
-
-    // Modify the appearance
-    element.style.outline = "2px solid green";
-
-    // Store it for later
-    originalStyles.push({ outline: originalOutline });
-    selectedElements.push(element);
-};
-
-const removeElements = () => {
-    for (let i = 0; i < selectedElements.length; i++) {
-        const element = selectedElements[i];
-        const originalStyle = originalStyles[i];
-
-        // Revert to original state
-        if (originalStyle && originalStyle.outline) {
-            element.style.outline = originalStyle.outline;
-        }
-    }
-
-    // Clear arrays
-    selectedElements = [];
-    originalStyles = [];
+const injectCss = () => {
+    const link = document.createElement("link");
+    link.href = chrome.runtime.getURL("contentStyle.css");
+    link.type = "text/css";
+    link.rel = "stylesheet";
+    document.head.appendChild(link);
 };
 
 chrome.runtime.onMessage.addListener((request, sender, respond) => {
+    console.log({ request });
+    // Wrap the logic inside a new Promise
     const handler = new Promise((resolve, reject) => {
         if (request) {
-            window.addEventListener("message", function (event) {
-                if (event.origin !== `chrome-extension://${chrome.runtime.id}`) return;
+            if (i === 0) {
+                injectIframe();
+                injectCss();
+                resolve("Iframe added to the page.");
+            }
 
-                console.log({ event });
-                if (event.data.type === "enableSelecting") {
-                    console.log("selectedElements", selectedElements);
-                    document.body.addEventListener("click", clickHandler);
-                }
+            // Switch or if-else logic here to handle different types of requests
+            if (request.type === "enableSelecting") {
+                attachClickHandler();
+                resolve("enabling selecting");
+            }
+            if (request.type === "disableSelecting") {
+                removeClickHandler();
+                removeElements();
+                resolve("disabling selecting");
+            }
+            if (request.type === "attachEventListener") {
+                attachMouseOverHandler();
+                resolve("attaching event listener");
+            }
 
-                if (event.data.type === "disableSelecting") {
-                    console.log("removed");
-                    removeElements();
-                    document.body.removeEventListener("click", clickHandler); // Remove click event listener
-                }
-
-                if (event.data.type === "attachEventListener") {
-                    document.body.addEventListener("mouseover", function (e) {
-                        const element = e.target;
-
-                        // Make sure it's an HTMLElement
-                        if (element instanceof HTMLElement) {
-                            if (lastModifiedElement) {
-                                lastModifiedElement.style.outline = "";
-                            }
-
-                            e.stopPropagation();
-                            e.preventDefault();
-
-                            element.style.outline = "2px solid pink";
-                            lastModifiedElement = element;
-                        }
-                    });
-                }
-            });
-            const currentFrame = document.getElementById("automation-iframe");
-            currentFrame && currentFrame.remove();
-
-            const panel = document.querySelector(".automation-panel");
-            panel && (panel.innerHTML = "");
-
-            // Create a new container for the iframe
-            const containerDiv = document.createElement("div");
-            containerDiv.style.width = "-webkit-fill-available";
-            containerDiv.style.position = "fixed";
-            containerDiv.style.bottom = "-20px";
-            containerDiv.style.left = "50%";
-            containerDiv.style.transform = "translateX(-50%)";
-            containerDiv.style.borderTopLeftRadius = "10px";
-            containerDiv.style.borderTopRightRadius = "10px";
-            containerDiv.style.zIndex = "9999";
-
-            const iframeSrc = chrome.runtime.getURL("index.html");
-
-            const iframe = document.createElement("iframe");
-            iframe.id = "automation-iframe";
-            iframe.src = iframeSrc;
-            iframe.width = "100%";
-            iframe.height = "100%";
-            iframe.height = "300px";
-
-            containerDiv.appendChild(iframe);
-
-            document.body.appendChild(containerDiv);
-
-            resolve("Iframe added to the page.");
+            resolve(`Request type ${request.type} is not supported.`);
         } else {
-            reject("request is empty.");
+            // If there is an error, reject the promise
+            reject("Request is empty.");
         }
     });
 
-    handler.then((message) => respond(message)).catch((error) => respond(error));
+    // Use then() and catch() to send the response
+    handler
+        .then((message) => {
+            console.log("sending response", { message });
 
+            respond({ status: "success", message });
+        })
+        .catch((error) => {
+            respond({ status: "error", message: error });
+        });
+
+    // Indicate that the response function will be called asynchronously
+    i++;
     return true;
 });

@@ -41,6 +41,11 @@ const buildActions = () => {
   templateUrl: "automation.component.html",
   styleUrls: ["automation.component.scss"],
 })
+@Component({
+  selector: "app-automation",
+  templateUrl: "automation.component.html",
+  styleUrls: ["automation.component.scss"],
+})
 export class AutomationComponent {
   message: string;
   actions = buildActions();
@@ -49,40 +54,52 @@ export class AutomationComponent {
   constructor(@Inject(TAB_ID) readonly tabId: number) {}
 
   ngOnInit() {
-    window.parent.postMessage({ type: "attachEventListener" }, "*");
+    window.addEventListener("message", this.handleMessageFromParent.bind(this));
+    this.sendMessageToContentScript({ type: "attachEventListener" });
   }
 
   selectAction(action: Action) {
     if (!action.available) return;
-
     this.selectedActionId = action.id;
-
-    console.log({ action });
-
     if (this.selectedActionId === 5) {
-      console.log("sssss");
-
-      window.parent.postMessage({ type: "enableSelecting" }, "*");
+      this.sendMessageToContentScript({ type: "enableSelecting" });
     }
   }
 
   backToActions() {
     this.selectedActionId = 0;
-    window.parent.postMessage({ type: "disableSelecting" }, "*");
+    this.sendMessageToContentScript({ type: "disableSelecting" });
   }
 
   ngOnDestroy() {
-    // Cleanup
-    window.removeEventListener("message", this.handleMessageFromParent);
+    window.removeEventListener(
+      "message",
+      this.handleMessageFromParent.bind(this)
+    );
+    this.sendMessageToContentScript({ type: "detachEventListener" });
   }
 
   handleMouseOver(event: MouseEvent) {
     const element = event.target as HTMLElement;
-    window.parent.postMessage({ type: "hover", element: element.tagName }, "*");
+    this.sendMessageToContentScript({
+      type: "hover",
+      element: element.tagName,
+    });
   }
 
   handleMessageFromParent(event: MessageEvent) {
     if (event.origin !== window.location.origin) return;
     console.log("Message from parent:", event.data);
+  }
+
+  private sendMessageToContentScript(message: any) {
+    // Use Chrome Extension message-passing API
+    chrome.tabs.sendMessage(this.tabId, message, (response) => {
+      if (chrome.runtime.lastError) {
+        console.error(chrome.runtime.lastError);
+        return;
+      }
+      console.log("Response from content script:", response);
+    });
   }
 }
