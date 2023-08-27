@@ -25,6 +25,8 @@ chrome.runtime.onMessage.addListener((request, sender, respond) => {
                 injectCss();
             }
             window.addEventListener("message", (event) => {
+                if (!event.origin.includes(chrome.runtime.id)) return;
+
                 if (event.data.type === "enableSelecting") {
                     attachClickHandler();
                 }
@@ -45,8 +47,6 @@ chrome.runtime.onMessage.addListener((request, sender, respond) => {
 
     handler
         .then((message) => {
-            console.log("sending response", { message });
-
             respond({ status: "success", message });
         })
         .catch((error) => {

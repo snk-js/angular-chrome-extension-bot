@@ -54,7 +54,6 @@ export class AutomationComponent {
   }
 
   selectAction(action: Action) {
-    console.log("selectAction", action);
     if (!action.available) return;
 
     this.selectedActionId = action.id;
@@ -88,11 +87,10 @@ export class AutomationComponent {
 
   handleMessageFromParent(event: MessageEvent) {
     if (event.origin !== window.location.origin) return;
-    console.log("Message from parent:", event.data);
   }
 
   private sendMessageToContentScript(message: any) {
-    const extensionOrigin = `chrome-extension://${chrome.runtime.id}`;
-    window.parent.postMessage(message, "*");
+    console.log(window.location);
+    window.parent.postMessage(message, window.location.ancestorOrigins[0]);
   }
 }
