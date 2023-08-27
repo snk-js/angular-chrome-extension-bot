@@ -18,32 +18,34 @@ const injectCss = () => {
 };
 
 chrome.runtime.onMessage.addListener((request, sender, respond) => {
-    console.log({ request });
     // Wrap the logic inside a new Promise
     const handler = new Promise((resolve, reject) => {
         if (request) {
+            console.log(request, "request");
+
             if (i === 0) {
                 injectIframe();
                 injectCss();
-                resolve("Iframe added to the page.");
             }
+            window.addEventListener("message", (event) => {
+                console.log(event.data, "event");
 
-            // Switch or if-else logic here to handle different types of requests
-            if (request.type === "enableSelecting") {
-                attachClickHandler();
-                resolve("enabling selecting");
-            }
-            if (request.type === "disableSelecting") {
-                removeClickHandler();
-                removeElements();
-                resolve("disabling selecting");
-            }
-            if (request.type === "attachEventListener") {
-                attachMouseOverHandler();
-                resolve("attaching event listener");
-            }
+                // Switch or if-else logic here to handle different types of requests
+                if (event.data.type === "enableSelecting") {
+                    attachClickHandler();
+                }
+                if (event.data.type === "disableSelecting") {
+                    removeClickHandler();
+                    removeElements();
+                }
+                if (event.data.type === "attachEventListener") {
+                    console.log("lol");
 
-            resolve(`Request type ${request.type} is not supported.`);
+                    attachMouseOverHandler();
+                }
+            });
+
+            resolve(`event.data type is not supported.`);
         } else {
             // If there is an error, reject the promise
             reject("Request is empty.");

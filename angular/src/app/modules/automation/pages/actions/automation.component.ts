@@ -41,11 +41,6 @@ const buildActions = () => {
   templateUrl: "automation.component.html",
   styleUrls: ["automation.component.scss"],
 })
-@Component({
-  selector: "app-automation",
-  templateUrl: "automation.component.html",
-  styleUrls: ["automation.component.scss"],
-})
 export class AutomationComponent {
   message: string;
   actions = buildActions();
@@ -59,8 +54,11 @@ export class AutomationComponent {
   }
 
   selectAction(action: Action) {
+    console.log("selectAction", action);
     if (!action.available) return;
+
     this.selectedActionId = action.id;
+
     if (this.selectedActionId === 5) {
       this.sendMessageToContentScript({ type: "enableSelecting" });
     }
@@ -72,11 +70,12 @@ export class AutomationComponent {
   }
 
   ngOnDestroy() {
+    // Cleanup
     window.removeEventListener(
       "message",
       this.handleMessageFromParent.bind(this)
     );
-    this.sendMessageToContentScript({ type: "detachEventListener" });
+    this.sendMessageToContentScript({ type: "detachEventListener" }); // Assuming you handle this in content script
   }
 
   handleMouseOver(event: MouseEvent) {
@@ -93,13 +92,7 @@ export class AutomationComponent {
   }
 
   private sendMessageToContentScript(message: any) {
-    // Use Chrome Extension message-passing API
-    chrome.tabs.sendMessage(this.tabId, message, (response) => {
-      if (chrome.runtime.lastError) {
-        console.error(chrome.runtime.lastError);
-        return;
-      }
-      console.log("Response from content script:", response);
-    });
+    // Replace '*' with your extension's origin for better security
+    window.parent.postMessage(message, "*");
   }
 }
