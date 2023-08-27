@@ -75,7 +75,7 @@ export class AutomationComponent {
       "message",
       this.handleMessageFromParent.bind(this)
     );
-    this.sendMessageToContentScript({ type: "detachEventListener" }); // Assuming you handle this in content script
+    this.sendMessageToContentScript({ type: "detachEventListener" });
   }
 
   handleMouseOver(event: MouseEvent) {
@@ -92,7 +92,7 @@ export class AutomationComponent {
   }
 
   private sendMessageToContentScript(message: any) {
-    // Replace '*' with your extension's origin for better security
+    const extensionOrigin = `chrome-extension://${chrome.runtime.id}`;
     window.parent.postMessage(message, "*");
   }
 }

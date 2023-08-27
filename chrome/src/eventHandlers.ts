@@ -16,8 +16,6 @@ function clickHandler(e) {
 }
 
 function mouseOutHandler(e) {
-    console.log("mouseOutHandler");
-
     const element = e.target;
     if (element) {
         mouseOutElement(element);
@@ -25,8 +23,6 @@ function mouseOutHandler(e) {
 }
 
 export function attachMouseOverHandler() {
-    console.log("attachMouseOverHandler");
-
     document.body.addEventListener("mouseover", mouseOverHandler);
     document.body.addEventListener("mouseout", mouseOutHandler);
 }
@@ -37,8 +33,6 @@ export function removeMouseOverHandler() {
 }
 
 function mouseOverHandler(e) {
-    console.log("mouseOverHandler");
-
     const element = e.target;
     if (element) {
         mouseOverElement(element);
