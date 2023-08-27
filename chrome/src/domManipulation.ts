@@ -6,7 +6,19 @@ type Criteria = {
 let selectedElements: HTMLElement[] = [];
 let predictedElements: HTMLElement[] = [];
 
-export function addElement(element: HTMLElement) {
+export function addElement(element: HTMLElement, isPredicted: boolean = false) {
+    if (predictedElements.length > 0 && !isPredicted) {
+        console.log("Predicted elements exist. Cancelling prediction.");
+        removeElements();
+    }
+
+    if (isPredicted) {
+        // Don't limit the number of predicted elements
+        element.classList.add("predicted-element");
+        predictedElements.push(element);
+        return;
+    }
+
     if (selectedElements.length > 2) {
         console.log("Too many elements selected. Cancelling prediction.");
         removeElements();
@@ -20,7 +32,11 @@ export function addElement(element: HTMLElement) {
 
     element.classList.add("selected-element");
     selectedElements.push(element);
+
     if (selectedElements.length === 2) {
+        if (predictedElements.length > 0) {
+            removeElements();
+        }
         predictElements(selectedElements);
     }
 }
@@ -31,6 +47,10 @@ export function addPredictedElement(element: HTMLElement) {
 }
 export function predictElements([firstElement, secondElement]: HTMLElement[]) {
     const commonCriteria: Criteria = {};
+
+    // Reset predicted elements before making a new prediction
+    predictedElements.forEach((el) => el.classList.remove("predicted-element"));
+    predictedElements = [];
 
     if (
         !firstElement.parentElement ||
@@ -57,9 +77,18 @@ export function predictElements([firstElement, secondElement]: HTMLElement[]) {
     const siblingElements = Array.from(firstElement.parentElement.children) as HTMLElement[];
 
     const matchingElements = siblingElements.filter((element) => {
-        if (commonCriteria.tagName && element.tagName !== commonCriteria.tagName) return false;
-        if (commonCriteria.className && element.className !== commonCriteria.className)
+        if (selectedElements.includes(element)) {
             return false;
+        }
+
+        if (commonCriteria.tagName && element.tagName !== commonCriteria.tagName) {
+            return false;
+        }
+
+        if (commonCriteria.className && element.className !== commonCriteria.className) {
+            return false;
+        }
+
         return true;
     });
 
@@ -70,7 +99,7 @@ export function predictElements([firstElement, secondElement]: HTMLElement[]) {
     }
 
     for (const element of matchingElements) {
-        addPredictedElement(element);
+        addElement(element, true);
     }
 }
 

@@ -55,9 +55,7 @@ export class AutomationComponent {
 
   selectAction(action: Action) {
     if (!action.available) return;
-
     this.selectedActionId = action.id;
-
     if (this.selectedActionId === 5) {
       this.sendMessageToContentScript({ type: "enableSelecting" });
     }
@@ -90,7 +88,6 @@ export class AutomationComponent {
   }
 
   private sendMessageToContentScript(message: any) {
-    console.log(window.location);
     window.parent.postMessage(message, window.location.ancestorOrigins[0]);
   }
 }

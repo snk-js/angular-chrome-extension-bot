@@ -1,11 +1,53 @@
+.selected-element,
+.predicted-element,
+.mouse-over-element {
+    position: relative;
+}
+
+.selected-element::before {
+    content: "Selected";
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: green;
+    color: white;
+    font-size: 12px;
+    padding: 2px;
+    z-index: 1;
+}
+
+.predicted-element::before {
+    content: "Predicted";
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: blue;
+    color: white;
+    font-size: 12px;
+    padding: 2px;
+    z-index: 1;
+}
+
 .selected-element {
     outline: 3px solid green;
+}
+
+.predicted-element {
+    outline: 3px solid blue;
 }
 
 .mouse-over-element {
     outline: 3px solid pink;
 }
 
-.predicted-element {
-    outline: 3px solid blue;
+.mouse-over-element::before {
+    content: "Mouse-over";
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: pink;
+    color: white;
+    font-size: 12px;
+    padding: 2px;
+    z-index: 1;
 }
