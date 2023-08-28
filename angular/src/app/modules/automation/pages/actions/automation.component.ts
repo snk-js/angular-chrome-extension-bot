@@ -2,39 +2,7 @@ import { Component, Inject } from "@angular/core";
 // import { bindCallback } from "rxjs";
 // import { map } from "rxjs/operators";
 import { TAB_ID } from "../../../../providers/tab-id.provider";
-
-class Action {
-  id: number;
-  icon: string;
-  title: string;
-  description: string;
-  // internal state
-  available = true;
-
-  constructor(icon: string, title: string, description: string, id: number) {
-    if ([4, 3, 2, 1].includes(id)) {
-      this.available = false;
-    }
-    this.id = id;
-    this.icon = icon;
-    this.title = title;
-    this.description = description;
-  }
-}
-
-const buildActions = () => {
-  const squaresConfig = [
-    ["☝️", "Click Button", "Clicks a button on the page"],
-    ["🔌", "Input Button", "Select an Input in the page"],
-    ["💾", "Store Data", "Select an Element on the Page"],
-    ["❔", "If Condition", "Add a condition to Run Actions Based On It"],
-    ["➰", "For Loop", "Select Multiple Elements On The Page"],
-  ];
-
-  return squaresConfig.map((config, i) => {
-    return new Action(config[0], config[1], config[2], i + 1);
-  });
-};
+import { ActionExtended, actions } from "./actions";
 
 @Component({
   selector: "app-automation",
@@ -43,7 +11,7 @@ const buildActions = () => {
 })
 export class AutomationComponent {
   message: string;
-  actions = buildActions();
+  actions = actions();
   selectedActionId: number = 0;
   selectedActionTitle: string = "";
 
@@ -53,7 +21,7 @@ export class AutomationComponent {
     this.sendMessageToContentScript({ type: "attachEventListener" });
   }
 
-  selectAction(action: Action) {
+  selectAction(action: ActionExtended) {
     if (!action.available) return;
     this.selectedActionId = action.id;
     this.selectedActionTitle = action.title;
@@ -78,6 +46,16 @@ export class AutomationComponent {
       type: "hover",
       element: element.tagName,
     });
+  }
+
+  resetSelectedActionId() {
+    this.selectedActionId = 0;
+    // Remove click listener logic here
+  }
+
+  // Method to handle save action
+  saveLinkedAction(action) {
+    // Logic to save and link the action
   }
 
   private sendMessageToContentScript(message: any) {

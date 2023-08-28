@@ -14,7 +14,6 @@ export function addElement(element: HTMLElement, isPredicted: boolean = false) {
     }
 
     if (isPredicted) {
-        // Don't limit the number of predicted elements
         element.classList.add("predicted-element");
         predictedElements.push(element);
         return;
@@ -49,7 +48,6 @@ export function addPredictedElement(element: HTMLElement) {
 export function predictElements([firstElement, secondElement]: HTMLElement[]) {
     const commonCriteria: Criteria = {};
 
-    // Reset predicted elements before making a new prediction
     predictedElements.forEach((el) => el.classList.remove("predicted-element"));
     predictedElements = [];
 
@@ -73,7 +71,6 @@ export function predictElements([firstElement, secondElement]: HTMLElement[]) {
         commonCriteria.parentClassName = firstElement.parentElement.className;
     }
 
-    // Additional check for data attributes
     const firstElementDataAttrs = Array.from(firstElement.attributes).filter((attr) =>
         attr.name.startsWith("data-")
     );
@@ -94,10 +91,8 @@ export function predictElements([firstElement, secondElement]: HTMLElement[]) {
         secondElement.parentElement &&
         firstElement.parentElement === secondElement.parentElement
     ) {
-        // If they share the same parent, start with siblings
         elementsToSearch = Array.from(firstElement.parentElement.children) as HTMLElement[];
     } else {
-        // Otherwise, search the entire document
         elementsToSearch = Array.from(
             document.querySelectorAll(commonCriteria.tagName)
         ) as HTMLElement[];
@@ -116,7 +111,6 @@ export function predictElements([firstElement, secondElement]: HTMLElement[]) {
             return false;
         }
 
-        // Check parent's class name
         if (
             commonCriteria.parentClassName &&
             (!element.parentElement ||
@@ -125,7 +119,6 @@ export function predictElements([firstElement, secondElement]: HTMLElement[]) {
             return false;
         }
 
-        // Check data attributes
         if (commonDataAttributes.length > 0) {
             if (
                 !commonDataAttributes.every(

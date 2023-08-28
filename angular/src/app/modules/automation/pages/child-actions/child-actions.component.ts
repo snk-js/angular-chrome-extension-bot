@@ -1,5 +1,4 @@
-import { Component, Input } from "@angular/core";
-
+import { Component, EventEmitter, Input, Output } from "@angular/core";
 @Component({
   selector: "app-child-actions",
   templateUrl: "./child-actions.component.html",
@@ -8,9 +7,12 @@ import { Component, Input } from "@angular/core";
 export class ChildActionsComponent {
   @Input() selectedActionId: number;
   @Input() actions: any[]; // Replace any with your actual type
+  @Output() resetActionId = new EventEmitter<void>();
+
+  @Output() saveAction = new EventEmitter<any>(); // Replace any with your actual type
 
   cancel() {
-    // Implement cancel logic here
+    this.resetActionId.emit(); // Emit event to parent to reset selectedActionId
   }
 
   reset() {
@@ -18,6 +20,9 @@ export class ChildActionsComponent {
   }
 
   save() {
-    // Implement save logic here
+    const savedAction = {
+      /* Your saved action data */
+    };
+    this.saveAction.emit(savedAction); // Emit saved action to parent
   }
 }
