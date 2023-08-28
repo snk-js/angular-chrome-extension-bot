@@ -1,4 +1,4 @@
-type ActionConfig = [string, string, string, Action[]]; // Explicit type for squaresConfig
+type ActionConfig = [string, string, string, number[]]; // Explicit type for squaresConfig
 
 export class Action {
   static nextId = 1;
@@ -6,19 +6,19 @@ export class Action {
   icon: string;
   title: string;
   description: string;
-  childActions: Action[] = [];
+  availableActions: number[] = [];
 
   constructor(
     icon: string,
     title: string,
     description: string,
-    childActions: Action[]
+    availableActions: number[]
   ) {
     this.id = Action.nextId++;
     this.icon = icon;
     this.title = title;
     this.description = description;
-    this.childActions = childActions || [];
+    this.availableActions = availableActions || [];
   }
 }
 
@@ -29,44 +29,31 @@ export class ActionExtended extends Action {
     icon: string,
     title: string,
     description: string,
-    childActions: Action[]
+    availableActions: number[]
   ) {
-    super(icon, title, description, childActions);
+    super(icon, title, description, availableActions);
     [1, 2, 3, 4].includes(this.id)
       ? (this.available = false)
       : (this.available = true);
   }
+
+  changeAvailability(available: boolean) {
+    this.available = available;
+  }
 }
 
-const buildActions = (): ActionExtended[] => {
+export const actions = (): ActionExtended[] => {
+  Action.nextId = 1;
+
   const actionConfigs: ActionConfig[] = [
     ["☝️", "Click Button", "Clicks a button on the page", []],
     ["🔌", "Input Button", "Select an Input in the page", []],
     ["💾", "Store Data", "Select an Element on the Page", []],
     ["❔", "If Condition", "Add a condition to Run Actions Based On It", []],
-    ["➰", "For Loop", "Select Multiple Elements On The Page", []],
+    ["➰", "For Loop", "Select Multiple Elements On The Page", [1]],
   ];
 
   return actionConfigs.map((config) => {
     return new ActionExtended(...config);
   });
-};
-
-export const actions = () => {
-  const config = {
-    // meaning that action 5 will have action 1 as its child
-    5: [1],
-  };
-
-  const actions = buildActions();
-
-  Object.keys(config).forEach((key) => {
-    const parentAction = actions.find((action) => action.id === +key);
-    const childActions = config[key].map((id) =>
-      actions.find((action) => action.id === id)
-    );
-    parentAction.childActions.push(childActions);
-  });
-
-  return actions;
 };

@@ -14,6 +14,7 @@ export class AutomationComponent {
   actions = actions();
   selectedActionId: number = 0;
   selectedActionTitle: string = "";
+  hasSavedElements: boolean = false;
 
   constructor(@Inject(TAB_ID) readonly tabId: number) {}
 
@@ -23,6 +24,17 @@ export class AutomationComponent {
 
   selectAction(action: ActionExtended) {
     if (!action.available) return;
+
+    if (this.hasSavedElements) {
+      if (action.id === 1) {
+        this.applyClickAction();
+        this.backToActions();
+        this.sendMessageToContentScript({ type: "unsaveElements" });
+        this.actions = actions();
+        return;
+      }
+    }
+
     this.selectedActionId = action.id;
     this.selectedActionTitle = action.title;
     if (this.selectedActionId === 5) {
@@ -31,9 +43,14 @@ export class AutomationComponent {
   }
 
   backToActions() {
-    this.selectedActionId = 0;
-    this.selectedActionTitle = "";
+    if (this.hasSavedElements) {
+      this.selectedActionTitle =
+        this.selectedActionTitle + " / Select child action";
+    } else {
+      this.selectedActionTitle = "";
+    }
     this.sendMessageToContentScript({ type: "disableSelecting" });
+    this.selectedActionId = 0;
   }
 
   ngOnDestroy() {
@@ -53,10 +70,26 @@ export class AutomationComponent {
   }
 
   saveElements() {
+    this.hasSavedElements = true;
     this.sendMessageToContentScript({ type: "saveElements" });
+
+    const availableActions = this.actions.find(
+      (action) => action.id === this.selectedActionId
+    ).availableActions;
+
+    this.actions.forEach((action) => {
+      if (availableActions.includes(action.id)) {
+        action.changeAvailability(true);
+      } else {
+        action.changeAvailability(false);
+      }
+    });
+
+    this.backToActions();
   }
 
   applyClickAction() {
+    this.hasSavedElements = false;
     this.sendMessageToContentScript({ type: "applyClickAction" });
   }
 

@@ -37,6 +37,10 @@ chrome.runtime.onMessage.addListener((request, sender, respond) => {
                     styleSavedElements();
                 }
 
+                if (event.data.type === "unsaveElements") {
+                    removeElements(true);
+                }
+
                 if (event.data.type === "applyClickAction") {
                     applyClickOnSavedElements();
                 }

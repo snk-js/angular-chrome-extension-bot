@@ -206,13 +206,22 @@ export function predictElements([firstElement, secondElement]: HTMLElement[]) {
     }
 }
 
-export function removeElements() {
+export function removeElements(saved?: boolean) {
     selectedElements.forEach((element) => {
         element.classList.remove("selected-element");
     });
     predictedElements.forEach((element) => {
         element.classList.remove("predicted-element");
     });
+
+    if (saved) {
+        savedElements.forEach((element) => {
+            element.classList.remove("saved-element");
+        });
+
+        savedElements = [];
+    }
+
     selectedElements = [];
     predictedElements = [];
 }

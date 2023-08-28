@@ -6,7 +6,7 @@
       <div class="px-2 text-sm text-green-500 rounded-sm">clickbot</div>
       <div class="font-medium text-green-200 rounded-sm">/ Actions&nbsp;</div>
       <div
-        *ngIf="selectedActionId > 0"
+        *ngIf="selectedActionId > 0 || hasSavedElements"
         class="font-medium text-yellow-200 rounded-sm"
       >
         / {{ selectedActionTitle }}
@@ -25,7 +25,7 @@
     <app-child-actions
       [selectedActionId]="selectedActionId"
       [actions]="actions"
-      (resetActionId)="resetSelectedActionId()"
+      (clear)="resetSelectedActionId()"
       (saveAction)="saveElements()"
     >
     </app-child-actions>
@@ -50,9 +50,7 @@
           *ngIf="!action.available"
           class="unavailable-overlay backdrop-blur-xl bg-opacity-60 font-black text-gray-700"
         >
-          <!-- Blurred background -->
           <div class="blur-background"></div>
-          <!-- Unblurred text -->
           <div class="unblur-text">Unavailable</div>
         </div>
 

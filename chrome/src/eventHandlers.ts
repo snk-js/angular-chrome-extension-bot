@@ -5,7 +5,7 @@ export function attachClickHandler() {
 }
 
 export function removeClickHandler() {
-    document.body.removeEventListener("click", clickHandler);
+    document.body.removeEventListener("click", clickHandler, true);
 }
 
 function clickHandler(e) {

@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, Output } from "@angular/core";
+import { Action } from "../actions/actions";
 @Component({
   selector: "app-child-actions",
   templateUrl: "./child-actions.component.html",
@@ -6,13 +7,13 @@ import { Component, EventEmitter, Input, Output } from "@angular/core";
 })
 export class ChildActionsComponent {
   @Input() selectedActionId: number;
-  @Input() actions: any[];
-  @Output() resetActionId = new EventEmitter<void>();
+  @Input() actions: Action[];
+  @Output() clear = new EventEmitter<void>();
 
   @Output() saveAction = new EventEmitter<any>();
 
   cancel() {
-    this.resetActionId.emit();
+    this.clear.emit();
   }
 
   save() {
