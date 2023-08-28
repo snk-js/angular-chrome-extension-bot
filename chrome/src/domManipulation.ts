@@ -6,6 +6,27 @@ type Criteria = {
 
 let selectedElements: HTMLElement[] = [];
 let predictedElements: HTMLElement[] = [];
+let savedElements: HTMLElement[] = [];
+
+export const getSavedElements = () => {
+    return selectedElements.concat(predictedElements);
+};
+
+export const styleSavedElements = () => {
+    const savedEls = getSavedElements();
+    savedElements = savedEls;
+    savedElements.forEach((element) => {
+        element.classList.remove("selected-element");
+        element.classList.remove("predicted-element");
+        element.classList.add("saved-element");
+    });
+};
+
+export const applyClickOnSavedElements = () => {
+    savedElements.forEach((element) => {
+        element.click();
+    });
+};
 
 function isValidComparison(firstElement: HTMLElement, secondElement: HTMLElement) {
     const excludedClasses = ["selected-element", "predicted-element", "mouse-over-element"];
@@ -15,8 +36,6 @@ function isValidComparison(firstElement: HTMLElement, secondElement: HTMLElement
     const secondElementClassList = Array.from(secondElement.classList).filter(
         (className) => !excludedClasses.includes(className)
     );
-
-    console.log(firstElementClassList, secondElementClassList);
 
     if (firstElementClassList.length !== secondElementClassList.length) {
         return false;

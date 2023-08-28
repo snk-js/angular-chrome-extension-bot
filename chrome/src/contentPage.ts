@@ -1,11 +1,6 @@
-import {
-    attachClickHandler,
-    removeClickHandler,
-    attachMouseOverHandler,
-    removeMouseOverHandler,
-} from "./eventHandlers";
+import { attachClickHandler, removeClickHandler, attachMouseOverHandler } from "./eventHandlers";
 import { injectIframe } from "./iframe";
-import { removeElements } from "./domManipulation";
+import { removeElements, styleSavedElements, applyClickOnSavedElements } from "./domManipulation";
 
 let i = 0;
 
@@ -36,6 +31,14 @@ chrome.runtime.onMessage.addListener((request, sender, respond) => {
                 }
                 if (event.data.type === "attachEventListener") {
                     attachMouseOverHandler();
+                }
+
+                if (event.data.type === "saveElements") {
+                    styleSavedElements();
+                }
+
+                if (event.data.type === "applyClickAction") {
+                    applyClickOnSavedElements();
                 }
             });
 

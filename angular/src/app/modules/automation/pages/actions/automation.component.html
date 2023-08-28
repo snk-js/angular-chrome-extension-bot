@@ -7,7 +7,7 @@
       <div class="font-medium text-green-200 rounded-sm">/ Actions&nbsp;</div>
       <div
         *ngIf="selectedActionId > 0"
-        class="font-medium text-stroke-yellow-200 rounded-sm"
+        class="font-medium text-yellow-200 rounded-sm"
       >
         / {{ selectedActionTitle }}
       </div>
@@ -26,7 +26,7 @@
       [selectedActionId]="selectedActionId"
       [actions]="actions"
       (resetActionId)="resetSelectedActionId()"
-      (saveAction)="saveLinkedAction($event)"
+      (saveAction)="saveElements()"
     >
     </app-child-actions>
   </div>

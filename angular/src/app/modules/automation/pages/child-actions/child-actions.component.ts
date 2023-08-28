@@ -16,7 +16,6 @@ export class ChildActionsComponent {
   }
 
   save() {
-    const savedAction = {};
-    this.saveAction.emit(savedAction);
+    this.saveAction.emit();
   }
 }

@@ -52,8 +52,13 @@ export class AutomationComponent {
     this.backToActions();
   }
 
-  // Method to handle save
-  saveLinkedAction(action) {}
+  saveElements() {
+    this.sendMessageToContentScript({ type: "saveElements" });
+  }
+
+  applyClickAction() {
+    this.sendMessageToContentScript({ type: "applyClickAction" });
+  }
 
   private sendMessageToContentScript(message: any) {
     window.parent.postMessage(message, window.location.ancestorOrigins[0]);
