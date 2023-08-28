@@ -1,7 +1,7 @@
 type ActionConfig = [string, string, string, Action[]]; // Explicit type for squaresConfig
 
 export class Action {
-  static nextId = 1; // Static property to hold next available ID
+  static nextId = 1;
   id: number = 0;
   icon: string;
   title: string;
@@ -14,7 +14,7 @@ export class Action {
     description: string,
     childActions: Action[]
   ) {
-    this.id = Action.nextId++; // Assign ID and increment next available ID
+    this.id = Action.nextId++;
     this.icon = icon;
     this.title = title;
     this.description = description;
@@ -33,8 +33,8 @@ export class ActionExtended extends Action {
   ) {
     super(icon, title, description, childActions);
     [1, 2, 3, 4].includes(this.id)
-      ? (this.available = true)
-      : (this.available = false);
+      ? (this.available = false)
+      : (this.available = true);
   }
 }
 
@@ -48,7 +48,7 @@ const buildActions = (): ActionExtended[] => {
   ];
 
   return actionConfigs.map((config) => {
-    return new ActionExtended(...config); // Spread the array into individual arguments
+    return new ActionExtended(...config);
   });
 };
 

@@ -7,6 +7,24 @@ type Criteria = {
 let selectedElements: HTMLElement[] = [];
 let predictedElements: HTMLElement[] = [];
 
+function isValidComparison(firstElement: HTMLElement, secondElement: HTMLElement) {
+    const excludedClasses = ["selected-element", "predicted-element", "mouse-over-element"];
+    const firstElementClassList = Array.from(firstElement.classList).filter(
+        (className) => !excludedClasses.includes(className)
+    );
+    const secondElementClassList = Array.from(secondElement.classList).filter(
+        (className) => !excludedClasses.includes(className)
+    );
+
+    console.log(firstElementClassList, secondElementClassList);
+
+    if (firstElementClassList.length !== secondElementClassList.length) {
+        return false;
+    }
+
+    return firstElementClassList.every((className) => secondElementClassList.includes(className));
+}
+
 export function addElement(element: HTMLElement, isPredicted: boolean = false) {
     if (predictedElements.length > 0 && !isPredicted) {
         console.log("Predicted elements exist. Cancelling prediction.");
@@ -119,6 +137,25 @@ export function predictElements([firstElement, secondElement]: HTMLElement[]) {
             return false;
         }
 
+        if (
+            element.children.length !== firstElement.children.length ||
+            element.children.length !== secondElement.children.length
+        ) {
+            return false;
+        }
+
+        if (
+            (element.parentElement &&
+                firstElement.parentElement &&
+                secondElement.parentElement &&
+                element.parentElement.children.length !==
+                    firstElement.parentElement.children.length) ||
+            element?.parentElement?.children.length !==
+                secondElement?.parentElement?.children.length
+        ) {
+            return false;
+        }
+
         if (commonDataAttributes.length > 0) {
             if (
                 !commonDataAttributes.every(
@@ -127,6 +164,13 @@ export function predictElements([firstElement, secondElement]: HTMLElement[]) {
             ) {
                 return false;
             }
+        }
+
+        if (firstElement.classList.value !== secondElement.classList.value) {
+            return (
+                isValidComparison(firstElement, element) &&
+                isValidComparison(secondElement, element)
+            );
         }
 
         return true;

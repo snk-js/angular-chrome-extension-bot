@@ -49,14 +49,11 @@ export class AutomationComponent {
   }
 
   resetSelectedActionId() {
-    this.selectedActionId = 0;
-    // Remove click listener logic here
+    this.backToActions();
   }
 
-  // Method to handle save action
-  saveLinkedAction(action) {
-    // Logic to save and link the action
-  }
+  // Method to handle save
+  saveLinkedAction(action) {}
 
   private sendMessageToContentScript(message: any) {
     window.parent.postMessage(message, window.location.ancestorOrigins[0]);

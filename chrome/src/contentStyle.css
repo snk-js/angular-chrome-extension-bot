@@ -9,9 +9,10 @@
     position: absolute;
     top: 0;
     left: 0;
-    background-color: green;
-    color: white;
-    font-size: 12px;
+    background: rgba(0, 255, 0, 0.2);
+    color: green;
+    font-weight: bold;
+    font-size: 0.75rem;
     padding: 2px;
     z-index: 1;
 }
@@ -21,33 +22,41 @@
     position: absolute;
     top: 0;
     left: 0;
-    background-color: blue;
-    color: white;
-    font-size: 12px;
+    background: rgba(0, 0, 255, 0.2);
+    color: blue;
+    font-weight: bold;
+    font-size: 0.75rem;
     padding: 2px;
     z-index: 1;
 }
 
 .selected-element {
     outline: 3px solid green;
+    background: rgba(0, 255, 0, 0.2);
+    z-index: 9999;
 }
 
 .predicted-element {
     outline: 3px solid blue;
+    background: rgba(0, 0, 255, 0.2);
+    z-index: 9999;
 }
 
 .mouse-over-element {
     outline: 3px solid pink;
+    background: rgba(255, 0, 0, 0.2);
+    z-index: 9999;
 }
 
 .mouse-over-element::before {
-    content: "Mouse-over";
+    content: "hover";
     position: absolute;
     top: 0;
     left: 0;
-    background-color: pink;
-    color: white;
-    font-size: 12px;
+    background: rgba(255, 0, 0, 0.2);
+    font-weight: bold;
+    color: red;
+    font-size: 0.75rem;
     padding: 2px;
     z-index: 1;
 }
