@@ -23,6 +23,7 @@ chrome.runtime.onMessage.addListener((request, sender, respond) => {
             if (i === 0) {
                 injectIframe();
                 injectCss();
+                resolve(`bot injected successfully.`);
             }
             window.addEventListener("message", (event) => {
                 if (!event.origin.includes(chrome.runtime.id)) return;

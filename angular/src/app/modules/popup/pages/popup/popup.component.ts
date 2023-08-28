@@ -21,7 +21,7 @@ export class PopupComponent {
         map((msg) =>
           chrome.runtime.lastError
             ? "The current page is protected by the browser, goto: https://www.google.nl and try again."
-            : JSON.stringify(msg)
+            : JSON.stringify(msg.message)
         )
       )
       .toPromise();
