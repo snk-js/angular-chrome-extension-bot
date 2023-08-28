@@ -1,6 +1,4 @@
 import { Component, Inject } from "@angular/core";
-// import { bindCallback } from "rxjs";
-// import { map } from "rxjs/operators";
 import { TAB_ID } from "../../../../providers/tab-id.provider";
 import { ActionExtended, actions } from "./actions";
 
@@ -15,6 +13,7 @@ export class AutomationComponent {
   selectedActionId: number = 0;
   selectedActionTitle: string = "";
   hasSavedElements: boolean = false;
+  actionConfigTitle: string = "";
 
   constructor(@Inject(TAB_ID) readonly tabId: number) {}
 
@@ -33,12 +32,22 @@ export class AutomationComponent {
         this.actions = actions();
         return;
       }
+      if (action.id === 2) {
+        this.selectedActionTitle =
+          this.selectedActionTitle +
+          " / Select child action" +
+          "/ " +
+          action.title;
+        this.selectedActionId = action.id;
+        this.actionConfigTitle = "Type anything";
+      }
     }
 
     this.selectedActionId = action.id;
     this.selectedActionTitle = action.title;
     if (this.selectedActionId === 5) {
       this.sendMessageToContentScript({ type: "enableSelecting" });
+      this.actionConfigTitle = "Select at least 2 components";
     }
   }
 
@@ -86,6 +95,20 @@ export class AutomationComponent {
     });
 
     this.backToActions();
+  }
+
+  back() {
+    this.hasSavedElements = false;
+    this.backToActions();
+    this.actions = actions();
+    this.sendMessageToContentScript({ type: "unsaveElements" });
+  }
+
+  inputElements(input: string) {
+    this.hasSavedElements = false;
+    this.backToActions();
+    this.actions = actions();
+    this.sendMessageToContentScript({ type: "inputElements", input });
   }
 
   applyClickAction() {

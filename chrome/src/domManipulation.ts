@@ -12,6 +12,18 @@ export const getSavedElements = () => {
     return selectedElements.concat(predictedElements);
 };
 
+export const applyInputToAllElements = (input: string) => {
+    savedElements.forEach((element) => {
+        if (element.tagName === "INPUT") {
+            element.setAttribute("value", input);
+        } else {
+            element.innerText = input;
+        }
+    });
+
+    removeElements(true);
+};
+
 export const styleSavedElements = () => {
     const savedEls = getSavedElements();
     savedElements = savedEls;

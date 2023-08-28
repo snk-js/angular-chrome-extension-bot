@@ -1,6 +1,11 @@
 import { attachClickHandler, removeClickHandler, attachMouseOverHandler } from "./eventHandlers";
 import { injectIframe } from "./iframe";
-import { removeElements, styleSavedElements, applyClickOnSavedElements } from "./domManipulation";
+import {
+    removeElements,
+    styleSavedElements,
+    applyClickOnSavedElements,
+    applyInputToAllElements,
+} from "./domManipulation";
 
 let i = 0;
 
@@ -43,6 +48,10 @@ chrome.runtime.onMessage.addListener((request, sender, respond) => {
 
                 if (event.data.type === "applyClickAction") {
                     applyClickOnSavedElements();
+                }
+
+                if (event.data.type === "inputElements" && event.data.input) {
+                    applyInputToAllElements(event.data.input);
                 }
             });
 

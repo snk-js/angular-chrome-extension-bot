@@ -23,16 +23,28 @@
 
   <div *ngIf="selectedActionId > 0; else actionsDisplay">
     <app-child-actions
+      [title]="actionConfigTitle"
       [selectedActionId]="selectedActionId"
       [actions]="actions"
       (clear)="resetSelectedActionId()"
       (saveAction)="saveElements()"
+      (inputElements)="inputElements($event)"
     >
     </app-child-actions>
   </div>
 
   <ng-template #actionsDisplay>
-    <span class="text-gray-300 text-sm font-bold m-4">choose one...</span>
+    <div class="flex justify-between">
+      <span class="text-gray-300 text-sm font-bold mx-4">choose one...</span>
+
+      <button
+        *ngIf="hasSavedElements"
+        class="px-4 mr-2 text-white bg-red-500 rounded hover:bg-red-600 focus:outline-none focus:ring"
+        (click)="back()"
+      >
+        Cancel
+      </button>
+    </div>
     <div class="flex">
       <div
         *ngFor="let action of actions"

@@ -50,7 +50,7 @@ export const actions = (): ActionExtended[] => {
     ["🔌", "Input Button", "Select an Input in the page", []],
     ["💾", "Store Data", "Select an Element on the Page", []],
     ["❔", "If Condition", "Add a condition to Run Actions Based On It", []],
-    ["➰", "For Loop", "Select Multiple Elements On The Page", [1]],
+    ["➰", "For Loop", "Select Multiple Elements On The Page", [1, 2]],
   ];
 
   return actionConfigs.map((config) => {
