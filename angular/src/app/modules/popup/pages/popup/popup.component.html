@@ -1,14 +1,29 @@
-<div class="w-60 h-96 p-10">
-  <div class="text-gray-900 font-semibold text-lg">
-    try to break your webpage with the automated clicks
-  </div>
-  <button
-    class="bg-blue-500 text-white h-full w-full p-4 rounded hover:bg-blue-700"
-    (click)="onClick()"
+<div class="w-60 h-96 bg-slate-400 rounded-lg p-4">
+  <div
+    class="text-[0.6rem] text-slate-700 font-semibold p-2 border-s-4 border-"
   >
-    summon clickbot
-  </button>
+    Hello, my name is Juliano Silva, 🇧🇷, I developed this extension for learning
+    and educational purposes, it's within development and awesome features is up
+    to come (like visualize nicely the html tree and javascript state of tag
+    elements). That's it, have fun, be kind, drink water, bye bye.
+  </div>
+
+  <div class="border-2 bg-slate-800 text-gray-400 p-1">
+    <div class="font-semibold">Click bot</div>
+    <div class="text-[0.7rem]">
+      click bot is a javascript app for webpagesoveranalysis, it reproduces
+      actions like click and inputs.
+    </div>
+  </div>
+  <div class="flex justify-center m-4">
+    <button
+      class="bg-blue-500 text-white p-2 rounded hover:bg-blue-700"
+      (click)="onClick()"
+    >
+      summon clickbot
+    </button>
+  </div>
   <div class="flex justify-between w-full mt-3 text-lg text-gray-900">
-    {{ message }}
+    response from the script: {{ message }}
   </div>
 </div>
