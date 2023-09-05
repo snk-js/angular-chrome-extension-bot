@@ -1,4 +1,5 @@
-This bot is an extension that clicks things on web pages
+This bot is an extension that visualize DOM elements, input and click things on web pages
+(early development)
 
 https://github.com/snk-js/click-bot/assets/34718184/ab57af70-6cb2-4d39-810c-dd4c5a4b916e
 
