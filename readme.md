@@ -1,7 +1,7 @@
 This bot is an extension that visualize DOM elements, input and click things on web pages
 (early development)
 
-https://github.com/snk-js/click-bot/assets/34718184/ab57af70-6cb2-4d39-810c-dd4c5a4b916e
+https://github.com/snk-js/angular-chrome-extension-bot/assets/34718184/e13eb28a-385e-424a-8f9f-ffdba819c8fe
 
 ### 1. requirements
 
